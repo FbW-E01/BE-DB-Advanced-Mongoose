@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
-import Pet from './models/pet.js';
+import faker from 'faker';
+import User from './models/user.js';
 
 // We need a user to exist in the target database so we can connect :)
 // $ mongo
@@ -14,7 +15,7 @@ const db = "exampledb";
 const connectionString = `mongodb://${username}:${password}@localhost:27017/${db}`;
 
 // These event handlers are helpful for logging!
-mongoose.connection.on('error',         (e) => console.log(">> Error!", e) || process.exit(0));
+mongoose.connection.on('error',         e => console.log(">> Error!", e) || process.exit(0));
 mongoose.connection.on('connecting',    () => console.log(">> Connecting"));
 mongoose.connection.on('disconnecting', () => console.log(">> Disconnecting"));
 mongoose.connection.on('disconnected',  () => console.log(">> Disconnected"));
@@ -23,15 +24,42 @@ try {
     // Connect to MongoDB using Mongoose
     await mongoose.connect(connectionString);
 
-    // If we got this far, the connection was successful!
-    console.log("Connected, inserting Rauli! :D");
+    // Purge (delete) ALL old users!
+    await User.deleteMany({}).exec();
 
-    // Let's create a new pet for insertion
-    const rauli = new Pet({ name: 42, age: "asd" });
-    
-    // Inerting an object based on a model with .save() is asynchronous!
-    rauli.save()
-        .then(() => console.log("Rauli saved!!!"))
-        .catch(e => console.log("Unable to save Rauli!!!", e))
-        .finally(() => mongoose.connection.close());
+    // Create array of fake user objects
+    const fakes = [];
+    for (let i = 50; i > 0; i--) {
+        fakes.push({
+            username: faker.fake("{{internet.userName}}"),
+            password: faker.fake("{{internet.password}}"),
+            age: faker.datatype.number(),
+            role: "User"
+        });
+    }
+
+    // Use fake user objects to create data into Mongo
+    await User.create(fakes);
+
+    // Create custom admin user
+    const adminUser = new User({
+        username: "Artholomew",
+        password: "Hippopotpourri",
+        age: 999,
+        role: "Admin"
+    })
+    await adminUser.save();
+
+    // We are now able to run methods on our admin user
+    // adminUser.buyBeer();
+
+    // We could also run static User methods
+    // User.findByName("Artholomew");
+
+    // Seeding done! Print how many users we now have!
+    const count = await User.count().exec();
+    console.log(`User seeding done! Current user count is ${count}`);
+
+    // Don't forget to close the connection :)
+    mongoose.connection.close();
 } catch (e) {}
