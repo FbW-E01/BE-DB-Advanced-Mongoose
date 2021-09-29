@@ -69,10 +69,10 @@ try {
 
     // Seeding done! Print how many users we now have!
     const count = await User.count().exec();
-    console.log(`User seeding done! Current user count is ${count}`);
-
-    // Don't forget to close the connection :)
-    mongoose.connection.close();
+    console.log(`User seeding done! Current user count is ${count}`);    
 } catch (e) {
     console.log("ERROR", e);
+} finally {
+    // Don't forget to close the connection :)
+    mongoose.connection.close();
 }

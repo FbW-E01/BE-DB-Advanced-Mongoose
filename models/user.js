@@ -23,16 +23,6 @@ const userSchema = new mongoose.Schema({
     skills:   [ skillsSchema ]
 });
 
-
-
-
-
-
-
-
-
-
-
 // Our user methods
 userSchema.methods.canEdit = function() {
     return this.role === "Admin" || this.role === "Editor";
