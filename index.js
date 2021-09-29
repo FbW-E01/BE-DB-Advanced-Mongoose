@@ -33,7 +33,7 @@ try {
         fakes.push({
             username: faker.fake("{{internet.userName}}"),
             password: faker.fake("{{internet.password}}"),
-            age: faker.datatype.number(),
+            age: "potato",
             role: "User"
         });
     }
@@ -62,4 +62,6 @@ try {
 
     // Don't forget to close the connection :)
     mongoose.connection.close();
-} catch (e) {}
+} catch (e) {
+    console.log("ERROR", e);
+}
