@@ -31,10 +31,20 @@ try {
     const fakes = [];
     for (let i = 50; i > 0; i--) {
         fakes.push({
-            username: faker.fake("{{internet.userName}}"),
-            password: faker.fake("{{internet.password}}"),
-            age: "potato",
-            role: "User"
+            username: faker.internet.userName(),
+            password: faker.internet.password(),
+            age: 72,
+            email: faker.internet.email(),
+            address: {
+                street: "Some Str. 99",
+                postal: "90210",
+                country: "Jugoslavia"
+            },
+            skills: [
+                { name: "JavaScript", level: 9 },
+                { name: "git", level: 3 },
+                { name: "CSS", level: 7 }
+            ]
         });
     }
 
@@ -46,8 +56,9 @@ try {
         username: "Artholomew",
         password: "Hippopotpourri",
         age: 999,
-        role: "Admin"
-    })
+        role: "Admin",
+        email: "admin@google.kr"
+    });
     await adminUser.save();
 
     // We are now able to run methods on our admin user

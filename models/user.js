@@ -1,11 +1,37 @@
 import mongoose from 'mongoose';
 
+const addressSchema = new mongoose.Schema({
+    _id: false,
+    street: String,
+    postal: String,
+    country: String
+});
+
+const skillsSchema = new mongoose.Schema({
+    _id: false,
+    name: { type: String, required: true, unique: true },
+    level: { type: Number, default: 0 }
+});
+
 const userSchema = new mongoose.Schema({
     username: String,
-    password: String,
-    age: Number,
-    role: String
+    password: { type: String },
+    age:      { type: Number, required: true },
+    role:     { type: String, required: true, default: "User" },
+    email:    { type: String, required: true, unique: true },
+    address:  addressSchema,
+    skills:   [ skillsSchema ]
 });
+
+
+
+
+
+
+
+
+
+
 
 // Our user methods
 userSchema.methods.canEdit = function() {
